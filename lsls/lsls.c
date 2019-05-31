@@ -20,6 +20,7 @@ int main(int argc, char **argv)
 
   // input directory is 2nd argument in command line
   char *input = argv[1];
+  printf("List for directory: %s\n", input);
 
   // Open directory
   DIR *dir = opendir(input);
@@ -45,7 +46,32 @@ int main(int argc, char **argv)
     struct stat buf;
     stat(ent->d_name, &buf);
 
-    printf("%10lld  %s\n", buf.st_size, ent->d_name);
+    // if file is a directory, print <DIR> instead of the filesize
+
+    if ((buf.st_mode & S_IFDIR) != 0) {
+      printf("    <DIR>  %s\n", ent->d_name);
+      // now we're inside of a directory
+      // let's repeat process from above to print one level down for each directory
+      struct dirent *subent;
+      DIR *subdir = opendir(ent->d_name);
+      while (1) {
+        subent = readdir(subdir);
+        if (subent == NULL) {
+          break;
+        }
+        struct stat subbuf;
+        stat(subent->d_name, &subbuf);
+
+        if ((subbuf.st_mode & S_IFDIR) != 0) {
+          printf("            <DIR>  %s\n", subent->d_name);
+        } else if ((subbuf.st_mode & S_IFREG) != 0) {
+          printf("      %10lld  %s\n", subbuf.st_size, subent->d_name);
+
+        }
+      }
+    } else if ((buf.st_mode & S_IFREG) != 0) {
+      printf("%10lld  %s\n", buf.st_size, ent->d_name);
+    }
   }
 
 
