@@ -45,7 +45,7 @@ int main(int argc, char **argv)
     struct stat buf;
     stat(ent->d_name, &buf);
 
-    printf("  %lld  %s\n", buf.st_size, ent->d_name);
+    printf("%10lld  %s\n", buf.st_size, ent->d_name);
   }
 
 
