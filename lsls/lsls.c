@@ -34,7 +34,7 @@ int main(int argc, char **argv)
 
   // pointer to dirent structure from dirent.h
   struct dirent *ent;
-  // loop through enttries and print their names
+  // loop through entries and print their names
   while (1) {
     ent = readdir(dir);
     // if no more entries, break out of loop
@@ -49,26 +49,26 @@ int main(int argc, char **argv)
     // if file is a directory, print <DIR> instead of the filesize
 
     if ((buf.st_mode & S_IFDIR) != 0) {
-      printf("    <DIR>  %s\n", ent->d_name);
+      printf("     <DIR>  %s\n", ent->d_name);
       // now we're inside of a directory
       // let's repeat process from above to print one level down for each directory
-      struct dirent *subent;
-      DIR *subdir = opendir(ent->d_name);
-      while (1) {
-        subent = readdir(subdir);
-        if (subent == NULL) {
-          break;
-        }
-        struct stat subbuf;
-        stat(subent->d_name, &subbuf);
+      // struct dirent *subent;
+      // DIR *subdir = opendir(ent->d_name);
+      // while (1) {
+      //   subent = readdir(subdir);
+      //   if (subent == NULL) {
+      //     break;
+      //   }
+      //   struct stat subbuf;
+      //   stat(subent->d_name, &subbuf);
 
-        if ((subbuf.st_mode & S_IFDIR) != 0) {
-          printf("            <DIR>  %s\n", subent->d_name);
-        } else if ((subbuf.st_mode & S_IFREG) != 0) {
-          printf("      %10lld  %s\n", subbuf.st_size, subent->d_name);
+      //   if ((subbuf.st_mode & S_IFDIR) != 0) {
+      //     printf("            <DIR>  %s\n", subent->d_name);
+      //   } else if ((subbuf.st_mode & S_IFREG) != 0) {
+      //     printf("       %10lld  %s\n", subbuf.st_size, subent->d_name);
 
-        }
-      }
+      //   }
+      // }
     } else if ((buf.st_mode & S_IFREG) != 0) {
       printf("%10lld  %s\n", buf.st_size, ent->d_name);
     }
